@@ -1,0 +1,22 @@
+{
+  "name": "score",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Harish Dhulipalla",
+  "license": "ISC",
+  "bin": {
+    "score": "./score.js"
+  },
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
+    "commander": "^2.20.0",
+    "node-html-parser": "^1.1.16",
+    "request": "^2.88.0"
+  }
+}
