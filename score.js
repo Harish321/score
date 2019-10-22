@@ -10,6 +10,7 @@ const scheduleUrl = "https://www.cricbuzz.com/cricket-series/2697/icc-cricket-wo
 program.option('-m, --match-id <matchId>', 'Match ID')
 .action(()=>{
     if(program.matchId){
+        startNotfication(program.matchId);
     }   
     else{
         var finalArray = [];
