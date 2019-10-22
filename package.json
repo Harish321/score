@@ -1,6 +1,6 @@
 {
-  "name": "score",
-  "version": "1.0.0",
+  "name": "score-notification",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "author": "Harish Dhulipalla",
   "license": "ISC",
   "bin": {
-    "score": "./score.js"
+    "score-notification": "./score.js"
   },
   "dependencies": {
     "child_process": "^1.0.2",
