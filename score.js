@@ -6,48 +6,7 @@ var program = require('commander');
 var HtmlParser = require('node-html-parser');
 var co = require('co');
 var prompt = require('co-prompt');
-const scheduleUrl = "https://www.cricbuzz.com/cricket-series/2697/icc-cricket-world-cup-2019/matches"
-program.option('-m, --match-id <matchId>', 'Match ID')
-.action(()=>{
-    if(program.matchId){
-        startNotfication(program.matchId);
-    }   
-    else{
-        var finalArray = [];
-        request(scheduleUrl,(err,res,body)=>{
-            if(err)
-                console.log(err);
-            else if(body){
-                var html = (HtmlParser.parse(body));
-                var matches = html.querySelectorAll(".cb-col-60.cb-col.cb-srs-mtchs-tm")
-                for (var i=matches.length-1;i>=0;i--){
-                    var p = matches[i].querySelector('.text-hvr-underline')
-                    if(p)
-                    var value = p.rawAttributes.href.replace('/live-cricket-scores/','').split('/')[0];
-                    if (p){
-                     finalArray.push({
-                         'match':matches[i].text,
-                         'id':value
-                     }) 
-                    }
-                }
-                console.log('Please select the match')
-                for(var i=0;i<10;i++){
-                    console.log((i+1) +'. '+ finalArray[i].match);
-                }
-                co(function *() {
-                    var matchId = yield prompt('match number: ');
-                    if(finalArray[matchId-1]){
-                        startNotfication(finalArray[matchId-1].id);
-                    } 
-                });
-                // startNotfication(finalArray[47-1].id);
-            }
-        })
-    }
-})
-.parse(process.argv);
-
+const scheduleUrl = "https://www.cricbuzz.com/cricket-series/2697/icc-cricket-world-cup-2019/matches";
 var init = true;
 var wrapperPreText = ["osascript -e '","'"];
 var wrapperDisplayNotification = ['display notification "','" with ']
@@ -62,6 +21,13 @@ var bt2 = {};
 var prevCom = '';
 var gp;
 
+var startNotfication = function(id){
+    const url = 'https://www.cricbuzz.com/match-api/'+id+'/commentary.json';
+    getIndiaMatch(url)
+     gp = setInterval(function(){
+        getIndiaMatch(url)
+    },40000)
+}
 var getIndiaMatch = function(url){
     request(url,(err,req,body)=>{
         try{body = JSON.parse(body)}
@@ -121,18 +87,57 @@ var getIndiaMatch = function(url){
         }
     })
 }
-
 var sendNotification = function(player1,player2,score,status){
     exesync(wrapperPreText[0]+wrapperDisplayNotification[0]+status+wrapperDisplayNotification[1]+wrapperTitle[0]+score+wrapperTitle[1]+wrapperSubTitle[0]+player1+player2+wrapperSubTitle[1]+wrapperPreText[1]);
     setTimeout(() => {
         exesync(wrapperPreText[0]+wrapperDisplayNotification[0]+status+wrapperDisplayNotification[1]+wrapperTitle[0]+score+wrapperTitle[1]+wrapperSubTitle[0]+player1+player2+wrapperSubTitle[1]+wrapperPreText[1]);
     }, 3000);
 }
+program.option('-m, --match-id <matchId>', 'Match ID')
+.action(()=>{
+    if(program.matchId){
+        startNotfication(program.matchId);
+    }   
+    else{
+        var finalArray = [];
+        request(scheduleUrl,(err,res,body)=>{
+            if(err)
+                console.log(err);
+            else if(body){
+                var html = (HtmlParser.parse(body));
+                var matches = html.querySelectorAll(".cb-col-60.cb-col.cb-srs-mtchs-tm")
+                for (var i=matches.length-1;i>=0;i--){
+                    var p = matches[i].querySelector('.text-hvr-underline')
+                    if(p)
+                    var value = p.rawAttributes.href.replace('/live-cricket-scores/','').split('/')[0];
+                    if (p){
+                     finalArray.push({
+                         'match':matches[i].text,
+                         'id':value
+                     }) 
+                    }
+                }
+                console.log('Please select the match')
+                for(var i=0;i<10;i++){
+                    console.log((i+1) +'. '+ finalArray[i].match);
+                }
+                co(function *() {
+                    var matchId = yield prompt('match number: ');
+                    if(finalArray[matchId-1]){
+                        startNotfication(finalArray[matchId-1].id);
+                    } 
+                });
+                // startNotfication(finalArray[47-1].id);
+            }
+        })
+    }
+})
+.parse(process.argv);
 
-var startNotfication = function(id){
-    const url = 'https://www.cricbuzz.com/match-api/'+id+'/commentary.json';
-    getIndiaMatch(url)
-     gp = setInterval(function(){
-        getIndiaMatch(url)
-    },40000)
-}
+
+
+
+
+
+
+
