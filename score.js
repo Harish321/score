@@ -22,7 +22,7 @@ var prevCom = '';
 var gp;
 
 var startNotfication = function(id){
-    const url = 'https://www.cricbuzz.com/match-api/'+id+'/commentary.json';
+    const url = 'https://www.cricbuzz.com/api/cricket-match/commentary/'+id;
     getIndiaMatch(url)
      gp = setInterval(function(){
         getIndiaMatch(url)
@@ -134,7 +134,8 @@ program.option('-m, --match-id <matchId>', 'Match ID')
 })
 .parse(process.argv);
 
-
+// un comment in order to debug.
+// startNotfication(31643);
 
 
 
